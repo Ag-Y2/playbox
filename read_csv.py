@@ -24,7 +24,7 @@ def get_count_data():
 
 def setState(idx , state):
     global glb_code
-    time = datetime.now().strftime('%Y-%m-%d %H:%m:%s')
+    time = datetime.now().strftime('%Y-%m-%d %H:%M:%S')
     txt = f' {time}:: {glb_code[idx]} :: {state}\n\n'
     f = open("log.txt", 'a',encoding='utf8')
     f.write(txt)
