@@ -1,0 +1,60 @@
+    #driver.execute_script("arguments[0].click();",bigcatebtn[0])
+    #bigcatebtn = WebDriverWait(driver, 10).until(EC.invisibilityOfElementLocated(bigcatebtn))
+
+    #bigcatebtn[0].click()
+    ActionChains(driver).move_to_element(bigcatebtn).click().perform()
+
+    eSelectedCategory = driver.find_element(By.XPATH, '//*[@id="eSelectedCategory"]')
+    esc_attr =  eSelectedCategory.getAttribute("categorynum")
+    while esc_attr != "1962":
+        print('eSelectedCategory is not 1962 keep searching')
+        bigcatebtn = driver.find_element(By.XPATH, '#eCategoryTbody > tr > td:nth-child(1) > div > ul > li:nth-child(31)')
+        ActionChains(driver).move_to_element(bigcatebtn).click().perform()
+        eSelectedCategory = driver.find_element(By.XPATH, '//*[@id="eSelectedCategory"]')
+        esc_attr =  eSelectedCategory.getAttribute("categorynum")
+        print('currnet eSelectedCategory value :',esc_attr)
+
+
+    print('test location 0 is private clicked?')
+    sleep(3)
+    print('test location 1')
+    driver.implicitly_wait(10)
+
+    print('befere add btn 1 ')
+    #추가 선택  작동 확인
+    add_btn1 = driver.find_elements_by_css_selector('#eCategorySelect')
+    ActionChains(driver).move_to_element(add_btn1[0]).click().perform()
+    #add_btn1[0].click()
+
+    print('test location 2')
+    sleep(2)
+
+    #중카테 선택
+    middle_query = "#eCategoryTbody > tr > td:nth-child(2) > div > ul > li[category_num ='1991']"
+
+    print(middle_query)
+    middlecatebtn = driver.find_elements_by_css_selector(middle_query)
+    #middlecatebtn[0].click()
+    ActionChains(driver).move_to_element(middlecatebtn[0]).click().perform()
+
+    print('test location 3')
+    sleep(2)
+    
+    #추가 선택
+    add_btn2 = driver.find_elements_by_css_selector('#eCategorySelect.btnCtrl')
+    add_btn2[0].click()
+
+    print('test location 4')
+    sleep(2)
+
+    #소카테 선택
+    small_query = f"#eCategoryTbody > tr > td:nth-child(3) > div > ul > li[category_num = '2018']"
+    smallcatebtn = driver.find_elements_by_css_selector(small_query)
+    ActionChains(driver).move_to_element(small_query[0]).click().perform()
+
+    print('test location 5')
+    sleep(2)
+    
+    #추가 선택
+    add_btn3 = driver.find_elements_by_css_selector('#eCategorySelect.btnCtrl')
+    add_btn3[0].click()

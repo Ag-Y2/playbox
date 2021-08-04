@@ -9,6 +9,7 @@ from selenium.webdriver.common.alert import Alert
 from selenium.webdriver.common.by import By
 from selenium.webdriver.support.ui import WebDriverWait
 from selenium.webdriver.support import expected_conditions as EC
+from selenium.webdriver.common.action_chains import ActionChains
 
 from time import sleep
 
@@ -40,54 +41,42 @@ def fun_dothe_mac(driver, indx , code , price , cateType):
     driver.implicitly_wait(10)
 
     #대카테 선택  https://scribblinganything.tistory.com/149   << 로딩 개기 참조 코드
+    #bigcatebtn = driver.find_elements_by_css_selector('#eCategoryTbody > tr > td:nth-child(1) > div > ul > li:nth-child(31)')
+    #bigcatebtn = driver.find_element(By.XPATH, '//*[@id="eCategoryTbody"]/tr/td[1]/div/ul/li[31]')
+    #bigcatebtn = WebDriverWait(driver, 10).until(EC.presence_of_element_located((By.CSS_SELECTOR, '#eCategoryTbody > tr > td:nth-child(1) > div > ul > li[category_num ="1962"]')))
+    #print(bigcatebtn)
     sleep(2)
-    #bigcatebtn = driver.find_elements_by_css_selector('#eCategoryTbody > tr > td:nth-child(1) > div > ul > li[category_num ="1962"]')
 
-    bigcatebtn = WebDriverWait(driver, 10).until(EC.presence_of_element_located((By.CSS_SELECTOR, '#eCategoryTbody > tr > td:nth-child(1) > div > ul > li[category_num ="1962"]')))
-    print(bigcatebtn)
-    #bigcatebtn[0].click()
+    script_bigcate_click = '''
+    var bigcate = document.querySelector('#eCategoryTbody > tr > td:nth-child(1) > div > ul > li[category_num ="1962"]');
+    bigcate.click();
+    var addbtn = document.querySelector('#eCategorySelect');
+    addbtn.click();
 
-    print('test location 1')
-    sleep(10)
+    '''
+    driver.execute_script(script_bigcate_click)
+    sleep(1)
 
-    print('befere add btn 1 ')
-    #추가 선택
-    add_btn1 = driver.find_elements_by_css_selector('#eCategorySelect')
-    add_btn1[0].click()
+    script_middlecate_click = '''
+    var midcate = document.querySelector("#eCategoryTbody > tr > td:nth-child(2) > div > ul > li[category_num ='{}']");
+    midcate.click();
+    var addbtn = document.querySelector('#eCategorySelect');
+    addbtn.click();
 
-    print('test location 2')
-    sleep(10)
+    '''.format(price)
+    driver.execute_script(script_middlecate_click)
+    sleep(1)
 
-    #중카테 선택
-    middle_query = "#eCategoryTbody > tr > td:nth-child(2) > div > ul > li[category_num ='"+price+"']"
-    middlecatebtn = driver.find_elements_by_css_selector(middle_query)
-    #middlecatebtn[0].click()
-    print(middlecatebtn[0])
+    print(cateType)
+    script_smallcate_click = '''
+    var smcate = document.querySelector('#eCategoryTbody > tr > td:nth-child(3) > div > ul > li[category_num ="{}"]');
+    smcate.click();
+    var addbtn = document.querySelector('#eCategorySelect');
+    addbtn.click();
 
-    print('test location 3')
-    sleep(10)
-    
-    #추가 선택
-    add_btn2 = driver.find_elements_by_css_selector('#eCategorySelect')
-    add_btn2[0].click()
-
-    print('test location 4')
-    sleep(10)
-
-    #소카테 선택
-    small_query = f'#eCategoryTbody > tr > td:nth-child(3) > div > ul > li[category_num = {cateType}]'
-    smallcatebtn = driver.find_elements_by_css_selector(small_query)
-    smallcatebtn[0].click()
-
-    print('test location 5')
-    sleep(10)
-    
-    #추가 선택
-    add_btn3 = driver.find_elements_by_css_selector('#eCategorySelect')
-    add_btn3[0].click()
-
-    print('test location 6')
-    sleep(10)
+    '''.format(cateType)
+    driver.execute_script(script_smallcate_click)
+    sleep(1)    
 
     #수정 버튼 클릭
     applybtn = driver.find_elements_by_css_selector('#eProductModify')
@@ -106,8 +95,6 @@ def fun_dothe_mac(driver, indx , code , price , cateType):
     #로그에 기록
     read_csv.setState(indx, 'True')
     
-    print('stop for now')
-    sleep(5000)
         
     #except Exception as e:
     #    print('error occurred ::', e )
@@ -157,8 +144,8 @@ def fun_logout(driver):
 def init_chrome():
     print('chrome init')
     options = webdriver.ChromeOptions()
-    options.add_experimental_option('excludeSwitches', ['enable-logging'])
-    #options.add_experimental_option("excludeSwitches", ["enable-automation"])
+    #options.add_experimental_option('excludeSwitches', ['enable-logging'])
+    options.add_experimental_option("excludeSwitches", ["enable-automation"])
     
     options.add_experimental_option('useAutomationExtension', False)
     driver = webdriver.Chrome(options=options)
@@ -191,6 +178,7 @@ def init_chrome():
 
 def main():
     init_chrome()
+    #init_test_def()
     '''
     print('tset')
     data_count = read_csv.get_count_data()
@@ -206,6 +194,32 @@ def main():
     
 
 #############
+
+def init_test_def():
+    options = webdriver.ChromeOptions()
+    #options.add_experimental_option('excludeSwitches', ['enable-logging'])
+    options.add_experimental_option("excludeSwitches", ["enable-automation"])
+    
+    options.add_experimental_option('useAutomationExtension', False)
+    driver = webdriver.Chrome(options=options)
+    driver.get("https://www.google.co.kr/")
+    driver.implicitly_wait(10)
+    txt = "hi there"
+    txt1 = " how are you doing"
+    txt2 = " it is lovly day "
+    script_injection = '''
+    javascript:alert('hi')
+    
+    '''
+    #driver.execute_script(script_injection)
+
+    script_injection01 = '''
+    alert('{0}{1}{2}');
+    
+    '''.format(txt, txt1, txt2)
+    driver.execute_script(script_injection01)
+
+    sleep(3000)
 
 if __name__ == "__main__":
     read_csv.read_file()
