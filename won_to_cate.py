@@ -13,7 +13,10 @@ class csvexchange:
             "리빙": 2008,
 
         }
-        return cateClass[value]
+        value = value.replace(' ','')
+        value = value + ' >'
+        return value
+        #return cateClass[value]
 
     def turnwon(self, value):
         valueClass = {
@@ -56,5 +59,7 @@ class csvexchange:
             "300000": 2002,
 
         }
+
+        value = value.replace(' ','')
 
         return valueClass[value]

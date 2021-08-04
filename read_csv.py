@@ -1,7 +1,7 @@
 import pandas as pd
 from datetime import datetime
 
-filepath = "./list.csv"
+filepath = "./list3.csv"
 #data = pd.read_csv(filepath, thousands=",", index_col=0, names=['col1','col2','col3'], encoding='utf-8')
 data = pd.read_csv(filepath, sep="," , dtype="unicode")
 

@@ -14,6 +14,7 @@ from selenium.webdriver.common.action_chains import ActionChains
 from time import sleep
 
 from won_to_cate import *
+    
 
 def fun_dothe_mac(driver, indx , code , price , cateType):
     #try:
@@ -54,8 +55,16 @@ def fun_dothe_mac(driver, indx , code , price , cateType):
     addbtn.click();
 
     '''
-    driver.execute_script(script_bigcate_click)
-    sleep(1)
+    
+    try:
+        driver.execute_script(script_bigcate_click)
+    except:
+        driver.close()
+        driver.switch_to_window(driver.window_handles[0])
+        driver.get_window_position(driver.window_handles[0])
+        fun_dothe_mac(driver, indx , code , price , cateType)
+
+    sleep(2)
 
     script_middlecate_click = '''
     var midcate = document.querySelector("#eCategoryTbody > tr > td:nth-child(2) > div > ul > li[category_num ='{}']");
@@ -64,19 +73,43 @@ def fun_dothe_mac(driver, indx , code , price , cateType):
     addbtn.click();
 
     '''.format(price)
-    driver.execute_script(script_middlecate_click)
-    sleep(1)
 
-    print(cateType)
+    try:
+        driver.execute_script(script_middlecate_click)
+    except:
+        driver.close()
+        driver.switch_to_window(driver.window_handles[0])
+        driver.get_window_position(driver.window_handles[0])
+        fun_dothe_mac(driver, indx , code , price , cateType)
+
+    sleep(2)
+
     script_smallcate_click = '''
-    var smcate = document.querySelector('#eCategoryTbody > tr > td:nth-child(3) > div > ul > li[category_num ="{}"]');
-    smcate.click();
+    var smcate = document.querySelectorAll('#eCategoryTbody > tr > td:nth-child(3) > div > ul > li');
+    var smcate_tar = "";
+    for(var i = 0; i < smcate.length; i++){{
+         
+        if(smcate[i].innerText == "{0}"){{
+            smcate_tar = i;
+            i = smcate.length;
+        }}
+    }}
+
+    smcate[smcate_tar].click();
     var addbtn = document.querySelector('#eCategorySelect');
     addbtn.click();
 
     '''.format(cateType)
-    driver.execute_script(script_smallcate_click)
-    sleep(1)    
+
+    try:
+        driver.execute_script(script_smallcate_click)
+    except:
+        driver.close()
+        driver.switch_to_window(driver.window_handles[0])
+        driver.get_window_position(driver.window_handles[0])
+        fun_dothe_mac(driver, indx , code , price , cateType)
+
+    sleep(2)    
 
     #수정 버튼 클릭
     applybtn = driver.find_elements_by_css_selector('#eProductModify')
@@ -160,7 +193,6 @@ def init_chrome():
     data_count = read_csv.get_count_data()
     for i in range(0 , data_count) :
         value = read_csv.get_data(i)
-        print(value)
         price =  csvex.turnwon(value[1])
         cate =  csvex.turncate(value[2])
         #fun_dothe_mac(driver, i, value[0] , value[1] , value[2])
@@ -214,10 +246,30 @@ def init_test_def():
     #driver.execute_script(script_injection)
 
     script_injection01 = '''
-    alert('{0}{1}{2}');
+    for(var i = 0 ; i < 10; i++){{
+        console.log('{0}');
+        console.log('---');
+        console.log('{0}');
+        console.log('****');
+        if(i == 8){{
+            console.log('iiiiiiiiiiiiiiiiiiii');
+        }}
+
+    }}
     
-    '''.format(txt, txt1, txt2)
+    '''.format(txt)
     driver.execute_script(script_injection01)
+
+    csvex = csvexchange()
+    data_count = read_csv.get_count_data()
+    for i in range(0 , data_count) :
+        value = read_csv.get_data(i)
+        price =  csvex.turnwon(value[1])
+        cate =  csvex.turncate(value[2])
+        #fun_dothe_mac(driver, i, value[0] , value[1] , value[2])
+        print(i, value[0] , price , cate)
+
+
 
     sleep(3000)
 
